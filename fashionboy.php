@@ -15,10 +15,8 @@
     <link rel="icon" type="image/png" href="images/logohong.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
     <script src='js/wow.js'></script>
     <script type="text/javascript" src="js/mylishop.js"></script>
@@ -27,50 +25,82 @@
 </head>
 
 <body>
-    <!-- button top -->
+
     <a href="#" class="back-to-top"><i class="fa fa-arrow-up"></i></a>
 
     <!-- background -->
     <div class="container-fluid">
         <div id="bg">
-            <!-- <img width="100%" height="100%" src="images/background.jpg" /> -->
             <?php
-            $sql = "SELECT image FROM slides WHERE id=1";
-            $result = $conn->query($sql);
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            // background slide
+            $bg = $conn->query("SELECT image FROM slides WHERE id=1");
+            if ($row = $bg->fetch(PDO::FETCH_ASSOC)) {
+                echo '<img width="100%" height="100%" src="' . $row['image'] . '" />';
+            }
             ?>
-                <img width="100%" height="100%" src="<?php echo $row['image']; ?>" alt="">
-            <?php } ?>
         </div>
-    </div><!-- /background -->
+    </div>
+    <!-- /background -->
 
     <!-- Header -->
     <?php include("model/header.php"); ?>
     <!-- /header -->
 
     <div class="main">
-        <!-- Content -->
         <div class="container">
+
             <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12">
+
                     <div class="product-main">
-                        <!-- Thời Trang Nam -->
+
                         <div class="title-product-main">
                             <h3 class="section-title">Thời Trang Nam</h3>
                         </div>
+
+                        <!-- Lọc theo giá -->
+                        <form method="GET" style="margin-bottom:20px;">
+                            <select name="price" onchange="this.form.submit()">
+                                <option value="">Lọc theo giá</option>
+                                <option value="1" <?php if (isset($_GET['price']) && $_GET['price'] == '1') echo 'selected'; ?>>Dưới 100,000đ</option>
+                                <option value="2" <?php if (isset($_GET['price']) && $_GET['price'] == '2') echo 'selected'; ?>>100,000đ - 200,000đ</option>
+                                <option value="3" <?php if (isset($_GET['price']) && $_GET['price'] == '3') echo 'selected'; ?>>200,000đ - 500,000đ</option>
+                                <option value="4" <?php if (isset($_GET['price']) && $_GET['price'] == '4') echo 'selected'; ?>>Trên 500,000đ</option>
+                            </select>
+                        </form>
+
                         <div class="content-product-main">
                             <div class="row">
+
                                 <?php
-                                $sql = "SELECT id,image,name,price FROM products WHERE category_id=1";
+                                // Filter xử lý
+                                $priceFilter = "";
+                                if (isset($_GET['price'])) {
+                                    $p = $_GET['price'];
+
+                                    if ($p == "1") {
+                                        $priceFilter = " AND price < 100000 ";
+                                    } elseif ($p == "2") {
+                                        $priceFilter = " AND price BETWEEN 100000 AND 200000 ";
+                                    } elseif ($p == "3") {
+                                        $priceFilter = " AND price BETWEEN 200000 AND 500000 ";
+                                    } elseif ($p == "4") {
+                                        $priceFilter = " AND price > 500000 ";
+                                    }
+                                }
+
+                                // TRUY VẤN SẢN PHẨM THỜI TRANG NAM + LỌC GIÁ
+                                $sql = "SELECT id, image, name, price FROM products WHERE category_id = 1";
+                                $sql .= $priceFilter;
+
                                 $result = $conn->query($sql);
 
                                 while ($kq = $result->fetch(PDO::FETCH_ASSOC)) {
-
                                 ?>
                                     <div class="col-md-3 col-sm-6 text-center">
                                         <div class="thumbnail">
                                             <div class="hoverimage1">
-                                                <img src="<?php echo $kq['image']; ?>" alt="Generic placeholder thumbnail" width="100%" height="300">
+                                                <img src="<?php echo $kq['image']; ?>" alt="" width="100%" height="300">
                                             </div>
                                             <div class="name-product">
                                                 <?php echo $kq['name']; ?>
@@ -89,40 +119,37 @@
                                                         <label style="color: red;">&hearts;</label> Chi Tiết <label style="color: red;">&hearts;</label>
                                                     </button>
                                                 </a>
-                                            </div><!-- /product-info -->
-                                        </div><!-- /thumbnail -->
-                                    </div><!-- /col -->
+                                            </div>
+                                        </div>
+                                    </div>
                                 <?php } ?>
-                            </div><!-- /row -->
-                        </div><!-- /Thời Trang Nam -->
 
-                    </div> <!-- /product-main -->
-                </div> <!-- /col -->
+                            </div>
+                        </div>
 
-            </div><!-- /row -->
-        </div><!-- /container -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
-    <!-- /main -->
 
-    <!-- partner -->
     <div class="container">
         <div class="title-product-main">
             <h3 class="section-title">Hãng Thời Trang Nổi Tiếng</h3>
         </div>
         <?php include("model/partner.php"); ?>
     </div>
-    <!-- /partner -->
 
-    <!-- footer -->
     <div class="container">
         <?php include("model/footer.php"); ?>
     </div>
-    <!-- /footer -->
-
 
     <script>
         new WOW().init();
     </script>
+
 </body>
 
 </html>
