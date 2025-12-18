@@ -1,4 +1,4 @@
-<?php require_once('connect.php'); ?>
+<?php require_once __DIR__ . '/connect.php'; ?>
 <footer style="background: #222; color: #fff; padding: 60px 0; font-family: Arial, sans-serif;">
     <div class="container">
         <div class="row">
@@ -8,10 +8,10 @@
                 <h4 style="color: #fbdd12; margin-bottom: 20px;">Giới thiệu</h4>
                 <p style="line-height: 1.8; color: #ccc;">
                     Ra đời từ năm 2017, chỉ từ một cửa hàng thời trang nhỏ, đến nay
-                    <strong style="color: #fbdd12;">MyLiShop</strong> đã trở thành hệ thống cửa hàng chuyên kinh doanh thời trang trẻ, là thương hiệu hàng đầu tại Đà Nẵng.
+                    <strong style="color: #fbdd12;">VIE Shop</strong> đã trở thành hệ thống cửa hàng chuyên kinh doanh thời trang trẻ, là thương hiệu hàng đầu tại Đà Nẵng.
                 </p>
                 <p style="margin: 10px 0 5px; color: #ccc;">Mọi phản ánh xin liên hệ:</p>
-                <p style="color: #ccc;">SĐT: 0397.450.200<br>Email: hoihmy2712@gmail.com</p>
+                <p style="color: #ccc;">SĐT: 0933.145.794<br>Email: congvietdn123@gmail.com</p>
             </div>
 
             <!-- Dịch vụ khách hàng -->
@@ -32,9 +32,9 @@
                 <h4 style="color: #fbdd12; margin-bottom: 20px;">Liên hệ</h4>
                 <ul style="list-style: none; padding: 0; color: #ccc;">
                     <li>Trụ sở: 99 Tô Hiến Thành, Sơn Trà, Đà Nẵng</li>
-                    <li>Email: hoihmy2712@gmail.com</li>
-                    <li>Website: <a href="https://www.mylishop.com.vn" style="color: #ccc;">MyLiShop.com.vn</a></li>
-                    <li>Facebook: MyLiShop</li>
+                    <li>Email: congvietdn123@gmail.com</li>
+                    <li>Website: <a href="https://www.vieshop.com.vn" style="color: #ccc;">VIEshop.com.vn</a></li>
+                    <li>Facebook: VIE Shop</li>
                     <li>Hỗ trợ: 0397.450.200</li>
                     <li>Đặt hàng: 0522.980.270</li>
                 </ul>
@@ -57,7 +57,7 @@
 
         <div class="row mt-4">
             <div class="col-12 text-center" style="border-top: 1px solid #444; padding-top: 20px; color: #aaa;">
-                <p>MyLiShop.com.vn © 2017. All Rights Reserved.</p>
+                <p>VIEshop.com.vn © 2017. All Rights Reserved.</p>
             </div>
         </div>
     </div>

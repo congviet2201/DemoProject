@@ -1,0 +1,15 @@
+[2025-12-16T04:21:33+00:00] MAIL FAIL TO=test@example.com SUB=[TEST] VIE Shop
+<p>This is a test to user.</p>
+
+[2025-12-16T04:21:35+00:00] MAIL FAIL TO=admin@localhost SUB=[TEST] VIE Shop Admin
+<p>Admin notification test.</p>
+
+[2025-12-16T04:35:34+00:00] MAIL LOG TO=newuser@example.com SUB=[VIE Shop] Đăng ký thành công
+<p>Chào bạn, cảm ơn đã đăng ký tại VIE Shop!</p><p>Username: demo_user</p>
+
+[2025-12-16T04:35:34+00:00] MAIL LOG TO=admin@localhost SUB=[VIE Shop] Người dùng mới đăng ký
+<p>Người dùng mới: demo_user (newuser@example.com)</p>
+
+[2025-12-16T04:59:05+00:00] MAIL LOG TO=admin@localhost SUB=VIE Shop - Đơn hàng mới ORD-1765861145
+<h3>Đơn hàng mới: ORD-1765861145</h3><p>Khách hàng: Đoàn Công Việt (congvietdn123@gmail.com)</p><p>Tổng: 450,000 đ</p><h4>Sản phẩm</h4><ul><li>Áo Sơ Mi Xanh x2 - 225,000 đ</li></ul>
+

@@ -1,18 +1,18 @@
-<?php require_once('model/connect.php'); ?>
+<?php require_once __DIR__ . '/model/connect.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Fashion MyLiShop</title>
+    <title>VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="title" content="Fashion MyLiShop - fashion mylishop" />
-    <meta name="description" content="Fashion MyLiShop - fashion mylishop" />
-    <meta name="keywords" content="Fashion MyLiShop - fashion mylishop" />
+    <meta name="title" content="VIE Shop - fashion vie" />
+    <meta name="description" content="VIE Shop - fashion vie" />
+    <meta name="keywords" content="VIE Shop - fashion vie" />
     <meta name="author" content="Hôih My" />
     <meta name="author" content="Y Blir" />
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -173,5 +173,4 @@
 
 </body>
 
-</html><?php require_once('model/connect.php'); ?>
-<!DOCTYPE html>
+</html>

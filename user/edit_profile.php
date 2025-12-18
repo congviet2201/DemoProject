@@ -1,13 +1,11 @@
 <?php
 // File: user/edit_profile.php
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../model/session.php';
 
 // 1. Kiểm tra đăng nhập
 if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
+    header('Location: /user/login.php');
     exit();
 }
 
@@ -28,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 2. Validation (Kiểm tra cơ bản)
     if (empty($new_fullname) || empty($new_email) || empty($new_phone) || empty($new_address)) {
         $_SESSION['edit_error'] = "Vui lòng điền đầy đủ tất cả các trường thông tin.";
-        header('Location: edit_profile.php');
+        header('Location: /user/edit_profile.php');
         exit();
     }
 
     // Validation email
     if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['edit_error'] = "Địa chỉ email không hợp lệ.";
-        header('Location: edit_profile.php');
+        header('Location: /user/edit_profile.php');
         exit();
     }
 
@@ -52,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['flash_message'] = "✅ Cập nhật thông tin thành công! (Dữ liệu chỉ được lưu vào Session).";
 
     // Chuyển hướng về trang profile để hiển thị kết quả
-    header('Location: profile.php');
+    header('Location: /user/profile.php');
     exit();
 }
 
@@ -66,7 +64,7 @@ require_once('../model/header.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh sửa thông tin - MyLiShop</title>
+    <title>Chỉnh sửa thông tin - VIE Shop</title>
     <style>
         .edit-container {
             margin-top: 30px;
@@ -103,7 +101,7 @@ require_once('../model/header.php');
                     </div>
                 <?php endif; ?>
 
-                <form action="edit_profile.php" method="POST">
+                <form action="/user/edit_profile.php" method="POST">
 
                     <div class="form-group">
                         <label>Mã ID:</label>

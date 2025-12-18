@@ -1,6 +1,6 @@
 <?php
-require_once('../model/connect.php');
-
+require_once __DIR__ . '/../model/session.php';
+require_once __DIR__ . '/../model/connect.php';
 
 if (isset($_GET['error'])) {
 	$error = "Vui lòng kiểm tra lại tài khoản hoặc mật khẩu của bạn!";
@@ -8,12 +8,14 @@ if (isset($_GET['error'])) {
 	$error = "";
 }
 
-if (isset($_GET['rs'])) {
-	echo "<script type=\"text/javascript\">alert(\"Bạn đã đăng ký thành công!\");</script>";
-	echo "<script type=\"text/javascript\">alert(\"Vui lòng đăng nhập để mua hàng!\");</script>";
-}
-if (isset($_GET['rf'])) {
-	echo "<script type=\"text/javascript\">alert(\"Đăng ký thất bại!\");</script>";
+// Kiểm tra thông báo đăng ký thành công
+$success_message = "";
+if (isset($_GET['success'])) {
+	$success_message = "Đăng ký thành công! Vui lòng đăng nhập bằng thông tin vừa đăng ký.";
+	if (isset($_SESSION['register_info'])) {
+		$success_message .= " (Username: " . htmlspecialchars($_SESSION['register_info']['username']) . ")";
+		unset($_SESSION['register_info']);
+	}
 }
 ?>
 
@@ -22,9 +24,9 @@ if (isset($_GET['rf'])) {
 
 <head>
 	<meta charset="UTF-8">
-	<title>MyLiShop Fashion</title>
+	<title>VIE Shop</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/png" href="images/logohong.png">
+	<link rel="icon" type="image/png" href="/images/vie_logo.png">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
@@ -40,7 +42,7 @@ if (isset($_GET['rf'])) {
 	<header>
 		<div class="container-fluid header_top wow bounceIn" data-wow-delay="0.1s">
 			<div class="col-sm-10 col-md-10">
-				<div class="header_top_left"> <span><i class="fa fa-phone"></i></span> <span>01697 450 200 | 0926 055 983</span>&nbsp;&nbsp;&nbsp; <span><i class="fa fa-envelope-o" aria-hidden="true"></i></span> <span>admin@mylishop.com.vn</span> </div>
+				<div class="header_top_left"> <span><i class="fa fa-phone"></i></span> <span>01697 450 200 | 0926 055 983</span>&nbsp;&nbsp;&nbsp; <span><i class="fa fa-envelope-o" aria-hidden="true"></i></span> <span>admin@vieshop.com.vn</span> </div>
 			</div>
 			<div class="col-sm-2 col-md-2">
 				<div class="header_top_right">
@@ -59,7 +61,7 @@ if (isset($_GET['rf'])) {
 		<div class="container">
 			<!-- Logo -->
 			<div class="title">
-				<a href="../index.php" title="MyLiShop"> <img src="../images/logohong.png" width="260px;" height="180px;"> </a>
+				<a href="/index.php" title="VIE Shop"> <img src="/images/vie_logo.png" alt="VIE Shop" style="height:80px; width:auto;"> </a>
 			</div>
 			<!-- /logo -->
 			<div class="col-sm-12 col-md-12 account">
@@ -69,13 +71,13 @@ if (isset($_GET['rf'])) {
 					?>
 						<i class="fa fa-user fa-lg"></i>
 						<span><?php echo $_SESSION['username'] ?></span> &nbsp;
-						<span><i class="fa fa-sign-out"></i><a href="user/logout.php"> Đăng xuất </a></span>
+						<span><i class="fa fa-sign-out"></i><a href="/user/logout.php"> Đăng xuất </a></span>
 					<?php   } else {
 					?>
 						<i class="fa fa-user fa-lg"></i>
-						<a href="login.php"> Đăng nhập </a> &nbsp;
+						<a href="/user/login.php"> Đăng nhập </a> &nbsp;
 						<i class="fa fa-users fa-lg"></i>
-						<a href="register.php"> Đăng ký </a>
+						<a href="/user/register.php"> Đăng ký </a>
 					<?php
 					}
 					?>
@@ -114,7 +116,7 @@ if (isset($_GET['rf'])) {
 							</li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
-							<form role="search" action="/search">
+							<form role="search" action="/search.php">
 								<div class="input-group header-search">
 									<input type="text" maxlength="50" name="query" id="searchs" class="form-control" placeholder="Nhập từ khóa..." style="font-size: 14px;">
 									<span class="input-group-btn">
@@ -124,7 +126,7 @@ if (isset($_GET['rf'])) {
 								</div>
 								<!-- /input-group -->
 								<div class="cart-total">
-									<a class="bg_cart" href="/cart" title="Giỏ hàng">
+									<a class="bg_cart" href="/cart.php" title="Giỏ hàng">
 										<button type="button" class="btn header-cart"><span class="fa fa-shopping-cart"></span> &nbsp;<span id="cart-total">0</span> sản phẩm</button>
 									</a>
 									<div class="mini-cart-content shopping_cart">
@@ -152,10 +154,25 @@ if (isset($_GET['rf'])) {
 						<center>
 							<h4><strong> ĐĂNG NHẬP VÀO TÀI KHOẢN </strong></h4>
 						</center>
-						<p style="color: red;"><?php echo $error; ?></p>
 					</div><!-- /panel-heading -->
 
 					<div class="panel-body">
+						<?php if (!empty($success_message)): ?>
+							<div class="alert alert-success alert-dismissible fade in">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<h4><i class="icon fa fa-check"></i> Thành công!</h4>
+								<?php echo $success_message; ?>
+							</div>
+						<?php endif; ?>
+
+						<?php if (!empty($error)): ?>
+							<div class="alert alert-danger alert-dismissible fade in">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<h4><i class="icon fa fa-ban"></i> Lỗi!</h4>
+								<?php echo $error; ?>
+							</div>
+						<?php endif; ?>
+
 						<form action="login-back.php" method="post" name="form-login" accept-charset="utf-8">
 							<div class="row">
 								<div class="col-sm-12 col-md-10 col-md-offset-1">

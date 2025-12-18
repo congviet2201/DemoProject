@@ -1,15 +1,22 @@
-<?php require_once('../model/connect.php'); ?>
+<?php
+require_once __DIR__ . '/../model/session.php';
+require_once __DIR__ . '/../model/connect.php';
+
+// Xóa thông tin session đăng ký cũ khi vào trang đăng ký
+unset($_SESSION['register_success']);
+unset($_SESSION['register_info']);
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>MyLiShop Fashion</title>
-    <link rel="icon" type="image/png" href="../images/logohong.png">
+    <title>VIE Shop</title>
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
     <meta name="viewport" content="width=device-width, initial-scale =1">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="My đẹp trai">
-    <meta name="author" content="Hôih My handsome">
+    <meta name="description" content="Vietnam Fashion Shop - VIE Shop" />
+    <meta name="author" content="VIE Shop" />
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -29,6 +36,51 @@
 
     <!-- Bootstrap Custom CSS -->
     <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <script>
+        function validateForm() {
+            const fullname = document.getElementsByName('fullname')[0].value.trim();
+            const username = document.getElementsByName('username')[0].value.trim();
+            const email = document.getElementsByName('email')[0].value.trim();
+            const phone = document.getElementsByName('phone')[0].value.trim();
+            const password = document.getElementsByName('password')[0].value;
+            const confirmPassword = document.getElementById('password_confirmation').value;
+
+            if (!fullname || !username || !email || !phone || !password || !confirmPassword) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Mật khẩu nhập lại không trùng khớp!');
+                return false;
+            }
+
+            if (password.length < 6) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                return false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Email không hợp lệ!');
+                return false;
+            }
+
+            const phoneRegex = /^[0-9]{9,11}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Số điện thoại phải từ 9-11 chữ số!');
+                return false;
+            }
+
+            const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+            if (!usernameRegex.test(username)) {
+                alert('Tên đăng ký phải có ít nhất 3 ký tự, chỉ chứa chữ, số và dấu gạch dưới!');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 
 <body>
@@ -44,6 +96,25 @@
                         </center>
                     </div>
                     <!-- /panel heading -->
+
+                    <?php
+                    // Hiển thị lỗi nếu có
+                    if (isset($_GET['error'])) {
+                        echo '<div class="alert alert-danger alert-dismissible fade in">';
+                        echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+                        echo '<strong>Lỗi!</strong>';
+                        if ($_GET['error'] == 'email_exists') {
+                            echo ' Email này đã được đăng ký!';
+                        } elseif ($_GET['error'] == 'username_exists') {
+                            echo ' Tên đăng ký này đã tồn tại!';
+                        } elseif ($_GET['error'] == 'password_mismatch') {
+                            echo ' Mật khẩu không trùng khớp!';
+                        } else {
+                            echo ' Đăng ký thất bại. Vui lòng thử lại!';
+                        }
+                        echo '</div>';
+                    }
+                    ?>
 
                     <form action="register-back.php" method="POST" name="myForm" onsubmit="return validateForm();">
                         <div class="panel-body">
@@ -136,7 +207,7 @@
                     <!-- panel-footer -->
                     <div class="panel-footer ">
                         <center>
-                            <img src="../images/logohong.png" width="230px;" height="110px;">
+                            <img src="/images/vie_logo.png" width="230px;" height="110px;">
                         </center>
                     </div>
                     <!-- /panel-footer -->

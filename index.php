@@ -1,8 +1,8 @@
 <?php
-require_once('model/connect.php');
-require_once('model/header.php');
+require_once __DIR__ . '/model/session.php';
+require_once __DIR__ . '/model/connect.php';
+require_once __DIR__ . '/model/header.php';
 
-// session_start();
 $prd = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 ?>
 <!DOCTYPE html>
@@ -11,10 +11,10 @@ $prd = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Fashion MyLiShop</title>
+    <title>VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="admin/bower_components/font-awesome/css/font-awesome.min.css">

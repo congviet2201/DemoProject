@@ -1,5 +1,5 @@
 <?php
-require_once('../model/connect.php');
+require_once __DIR__ . '/connect.php';
 // Success
 if (isset($_GET['cs'])) {
     echo "<script type=\"text/javascript\">alert(\"Gửi liên hệ thành công!\");</script>";
@@ -18,15 +18,15 @@ if (isset($_GET['cf'])) {
 <html>
 
 <head>
-    <title>Fashion MyLiShop</title>
+    <title>VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale =1">
     <meta charset="utf-8">
-    <meta name="title" content="Fashion MyLiShop - fashion mylishop" />
-    <meta name="description" content="Fashion MyLiShop - fashion mylishop" />
-    <meta name="keywords" content="Fashion MyLiShop - fashion mylishop" />
+    <meta name="title" content="VIE Shop - fashion vie" />
+    <meta name="description" content="VIE Shop - fashion vie" />
+    <meta name="keywords" content="VIE Shop - fashion vie" />
     <meta name="author" content="Hôih My" />
     <meta name="author" content="Y Blir" />
-    <link rel="icon" type="image/png" href="../images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -37,12 +37,12 @@ if (isset($_GET['cf'])) {
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
     <script src='../js/wow.js'></script>
     <!-- Bootstrap Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 
 <body>
     <!-- button top -->
-    <a href="/index.php" class="back-to-top"><i class="fa fa-arrow-up"></i></a>
+    <a href="../index.php" class="back-to-top"><i class="fa fa-arrow-up"></i></a>
 
     <!-- header -->
     <?php include '../model/header.php'; ?>
@@ -50,7 +50,7 @@ if (isset($_GET['cf'])) {
 
     <div class="container">
         <ul class="breadcrumb">
-            <li><a href="/index.php"> Trang chủ </a></li>
+            <li><a href="../index.php"> Trang chủ </a></li>
             <li> Liên hệ </li>
         </ul><!-- /breadcrumb -->
         <div class="row">

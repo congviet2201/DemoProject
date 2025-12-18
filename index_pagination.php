@@ -1,6 +1,6 @@
 <?php
-session_start();
-include 'model/connect.php';
+require_once __DIR__ . '/model/session.php';
+require_once __DIR__ . '/model/connect.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

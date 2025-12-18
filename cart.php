@@ -1,7 +1,7 @@
 <?php
-session_start();
-require_once('model/connect.php');
-require_once('model/header.php'); // Giả định file này include <head> và header HTML
+require_once __DIR__ . '/model/session.php';
+require_once __DIR__ . '/model/connect.php';
+require_once __DIR__ . '/model/header.php'; // Giả định file này include <head> và header HTML
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,9 +9,9 @@ require_once('model/header.php'); // Giả định file này include <head> và 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Giỏ Hàng | Fashion MyLiShop</title>
+    <title>Giỏ Hàng | VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="admin/bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">

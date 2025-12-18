@@ -1,14 +1,12 @@
 <?php
 // File: user/profile.php
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../model/session.php';
 
 // 1. Kiểm tra đăng nhập
 if (!isset($_SESSION['user'])) {
     // Chuyển hướng về trang đăng nhập nếu chưa đăng nhập
-    header('Location: login.php');
+    header('Location: /user/login.php');
     exit();
 }
 
@@ -18,7 +16,7 @@ $user = $_SESSION['user'];
 // 2. Include Header (Giả định nằm ở thư mục gốc)
 // Thay đổi đường dẫn nếu cấu trúc file của bạn khác
 // require_once('../model/connect.php'); // Dòng này thường dùng khi có Database
-require_once('../model/header.php');
+require_once __DIR__ . '/../model/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +25,7 @@ require_once('../model/header.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin cá nhân - MyLiShop</title>
+    <title>Thông tin cá nhân - VIE Shop</title>
     <style>
         .profile-container {
             margin-top: 30px;

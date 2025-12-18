@@ -2,7 +2,7 @@
     <div class="banner-wrapper wow lightSpeedIn">
         <div class="row">
             <?php
-            require_once("connect.php");
+            require_once(__DIR__ . "/connect.php");
 
             if (!isset($conn)) {
                 echo "<h3 style='color: red; text-align: center;'>Lỗi: Biến kết nối PDO (\$conn) chưa được khởi tạo.</h3>";
@@ -51,7 +51,7 @@
                                 text-shadow: 0 0 8px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,255,0.3);
                                 text-align: center;
                             ">
-                                MyliShop - Fashion & Lifestyle
+                                VIE Shop - Fashion & Lifestyle
                             </h3>
 
                             <img src="<?php echo $image_src_fixed; ?>"

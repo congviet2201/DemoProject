@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Fashion MyLiShop</title>
+    <title>VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
@@ -110,7 +110,7 @@
 
             <hr>
 
-            <a href="/addcart.php?id=<?php echo $row['id']; ?>">
+            <a href="../addcart.php?id=<?php echo $row['id']; ?>">
                 <button class="btn btn-warning btn-order-custom">
                     <i class="glyphicon glyphicon-shopping-cart"></i> Đặt mua ngay
                 </button>

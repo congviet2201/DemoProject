@@ -5,13 +5,15 @@ $password = "77171771";
 $database = "fashion_mylishop";
 
 try {
-    // Tạo kết nối PDO
-    $conn = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $user, $password);
-
-    // Đặt chế độ báo lỗi (rất quan trọng)
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn = new PDO(
+        "mysql:host=$host;dbname=$database;charset=utf8",
+        $user,
+        $password,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
 } catch (PDOException $e) {
-    // Bắt lỗi kết nối
     die("Connection failed: " . $e->getMessage());
 }
-

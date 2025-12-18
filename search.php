@@ -1,9 +1,7 @@
 <?php
 // 1. Kết nối CSDL & Session
-require_once("model/connect.php");
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/model/session.php';
+require_once __DIR__ . '/model/connect.php';
 
 // 2. Xử lý logic tìm kiếm
 $keyword = "";
@@ -43,7 +41,7 @@ if (isset($_GET['keyword'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Tìm kiếm: <?= htmlspecialchars($keyword) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="admin/bower_components/font-awesome/css/font-awesome.min.css">

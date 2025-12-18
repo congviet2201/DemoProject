@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL ^ E_DEPRECATED);
-require_once '../model/connect.php';
+require_once __DIR__ . '/connect.php';
 
 if (isset($_POST['sendcontact'])) {
     $namect = $_POST['contact-name'];

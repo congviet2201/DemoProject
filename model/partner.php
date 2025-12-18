@@ -1,5 +1,5 @@
 <?php
-include "connect.php"; // kết nối DB
+require_once __DIR__ . '/connect.php'; // kết nối DB
 ?>
 <div class="container">
     <h3 class="title text-center" style="margin-bottom:20px; color:#ff0066; font-weight:700;">

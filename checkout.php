@@ -1,23 +1,15 @@
 <?php
-// Sử dụng session_start() nếu chưa được gọi
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/model/session.php';
+require_once __DIR__ . '/model/connect.php';
 
-// Giả định các file này nằm ở model/
-require_once('model/connect.php');
-require_once('model/header.php');
-
-// 1. Kiểm tra giỏ hàng
+// Kiểm tra giỏ hàng không trống
 if (empty($_SESSION['cart'])) {
-    // Nếu giỏ hàng trống, chuyển hướng về trang giỏ hàng
-    $_SESSION['flash_message'] = "Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm để thanh toán.";
-    header('Location: cart.php');
-    exit();
+    $_SESSION['flash_message'] = "Giỏ hàng trống. Vui lòng thêm sản phẩm trước.";
+    header('Location: /cart.php');
+    exit;
 }
 
-$total_cart_price = 0;
-// Lấy thông tin người dùng nếu đã đăng nhập để điền sẵn vào form
+// Lấy thông tin người dùng nếu đã đăng nhập
 $user_info = [
     'fullname' => '',
     'email' => '',
@@ -26,16 +18,91 @@ $user_info = [
 ];
 
 if (isset($_SESSION['user'])) {
-    // Lấy thông tin từ session user (đã kiểm tra trong file login.php trước đó)
-    $user_info['fullname'] = $_SESSION['user']['fullname'] ?? '';
-    $user_info['email'] = $_SESSION['user']['email'] ?? '';
-    $user_info['phone'] = $_SESSION['user']['phone'] ?? '';
-    $user_info['address'] = $_SESSION['user']['address'] ?? '';
+    $user_info = [
+        'fullname' => $_SESSION['user']['fullname'] ?? '',
+        'email' => $_SESSION['user']['email'] ?? '',
+        'phone' => $_SESSION['user']['phone'] ?? '',
+        'address' => $_SESSION['user']['address'] ?? ''
+    ];
 }
 
-// Lấy thông báo lỗi từ process_checkout.php nếu có
-$error_message = $_SESSION['checkout_error'] ?? null;
-unset($_SESSION['checkout_error']);
+// Xử lý form checkout
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fullname = trim($_POST['fullname'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+    $payment_method = trim($_POST['payment_method'] ?? 'COD');
+    
+    // Validation
+    if (empty($fullname) || empty($email) || empty($phone) || empty($address)) {
+        $_SESSION['checkout_error'] = "Vui lòng điền đầy đủ thông tin.";
+        header('Location: /checkout.php');
+        exit;
+    }
+    
+    // Tính tổng tiền
+    $total_amount = 0;
+    foreach ($_SESSION['cart'] as $item) {
+        $total_amount += $item['price'] * $item['quantity'];
+    }
+    
+    // Tạo đơn hàng
+    $order_id = 'ORD-' . time();
+    $new_order = [
+        'order_id' => $order_id,
+        'fullname' => $fullname,
+        'email' => $email,
+        'phone' => $phone,
+        'address' => $address,
+        'total_amount' => $total_amount,
+        'cart_items' => $_SESSION['cart'],
+        'payment_method' => $payment_method,
+        'order_date' => date('Y-m-d H:i:s'),
+        'status' => 'pending'
+    ];
+    
+    // Lưu vào session
+    $_SESSION['order_info'] = $new_order;
+    if (!isset($_SESSION['orders'])) {
+        $_SESSION['orders'] = [];
+    }
+    $_SESSION['orders'][$order_id] = $new_order;
+    // Xóa các sản phẩm đã mua khỏi giỏ hàng
+    foreach ($new_order['cart_items'] as $pid => $p) {
+        if (isset($_SESSION['cart'][$pid])) {
+            unset($_SESSION['cart'][$pid]);
+        }
+    }
+    // Nếu giỏ hàng trống, xoá luôn key
+    if (empty($_SESSION['cart'])) {
+        unset($_SESSION['cart']);
+    }
+
+    $_SESSION['flash_message'] = "Đặt hàng thành công! Mã đơn hàng: " . $order_id;
+    // Notify admin by email about new order
+    require_once __DIR__ . '/model/config.php';
+    require_once __DIR__ . '/model/mail.php';
+
+    $adminSubject = SITE_NAME . " - Đơn hàng mới " . $order_id;
+    $adminMessage = "<h3>Đơn hàng mới: " . $order_id . "</h3>";
+    $adminMessage .= "<p>Khách hàng: " . htmlspecialchars($fullname) . " (" . htmlspecialchars($email) . ")</p>";
+    $adminMessage .= "<p>Tổng: " . number_format($total_amount) . " đ</p>";
+    $adminMessage .= "<h4>Sản phẩm</h4><ul>";
+    foreach ($new_order['cart_items'] as $it) {
+        $adminMessage .= "<li>" . htmlspecialchars($it['name']) . " x" . intval($it['quantity']) . " - " . number_format($it['price']) . " đ</li>";
+    }
+    $adminMessage .= "</ul>";
+    send_mail_simple(ADMIN_EMAIL, $adminSubject, $adminMessage);
+
+    header('Location: /order_success.php');
+    exit;
+}
+
+$total_price = 0;
+foreach ($_SESSION['cart'] as $item) {
+    $total_price += $item['price'] * $item['quantity'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,9 +110,9 @@ unset($_SESSION['checkout_error']);
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Thanh Toán | Fashion MyLiShop</title>
+    <title>Thanh Toán | VIE Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/logohong.png">
+    <link rel="icon" type="image/png" href="/images/vie_logo.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="admin/bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -83,114 +150,96 @@ unset($_SESSION['checkout_error']);
 </head>
 
 <body>
-    <div class="main container checkout-container">
-        <h2 class="text-center checkout-title">Xác Nhận Đơn Hàng & Thanh Toán</h2>
+    <?php include_once __DIR__ . '/model/header.php'; ?>
+    <div class="checkout-container container">
+        <h2 class="text-center" style="color: #ff0066; margin-bottom: 30px;"><i class="fa fa-credit-card"></i> THANH TOÁN</h2>
 
-        <?php if ($error_message): ?>
-            <div class="alert alert-danger">
-                <i class="fa fa-exclamation-triangle"></i> Lỗi: <?php echo $error_message; ?>
-            </div>
-        <?php endif; ?>
-
-        <form action="process_checkout.php" method="POST">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="checkout-box">
-                        <h4 class="checkout-title">Thông Tin Giao Hàng</h4>
-                        <?php if (!isset($_SESSION['user'])): ?>
-                            <div class="alert alert-warning">
-                                Bạn đang thanh toán với tư cách Khách. Vui lòng điền thông tin chi tiết.
-                            </div>
-                        <?php endif; ?>
-
+        <div class="row">
+            <!-- Form nhập thông tin -->
+            <div class="col-md-6">
+                <div class="checkout-box">
+                    <h3 class="checkout-title">📋 Thông tin giao hàng</h3>
+                    <form method="POST" action="">
                         <div class="form-group">
-                            <label for="fullname">Họ và Tên (*)</label>
-                            <input type="text" class="form-control" id="fullname" name="fullname" value="<?php echo htmlspecialchars($user_info['fullname']); ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email (*)</label>
-                            <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user_info['email']); ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Số Điện Thoại (*)</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($user_info['phone']); ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Địa Chỉ Giao Hàng (*)</label>
-                            <textarea class="form-control" id="address" name="address" rows="3" required><?php echo htmlspecialchars($user_info['address']); ?></textarea>
+                            <label>Họ và tên *</label>
+                            <input type="text" name="fullname" class="form-control" required value="<?php echo htmlspecialchars($user_info['fullname']); ?>">
                         </div>
 
-                        <h4 class="checkout-title" style="margin-top: 30px;">Phương Thức Thanh Toán</h4>
                         <div class="form-group">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="payment_method" value="COD" checked>
-                                    **Thanh toán khi nhận hàng (COD)**
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="payment_method" value="BANK_TRANSFER">
-                                    Chuyển khoản ngân hàng (Sẽ liên hệ sau)
-                                </label>
-                            </div>
+                            <label>Email *</label>
+                            <input type="email" name="email" class="form-control" required value="<?php echo htmlspecialchars($user_info['email']); ?>">
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="checkout-box">
-                        <h4 class="checkout-title">Tóm Tắt Đơn Hàng</h4>
-                        <table class="table order-summary">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th class="text-right">SL</th>
-                                    <th class="text-right">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($_SESSION['cart'] as $item) :
-                                    $sub_total = $item['price'] * $item['quantity'];
-                                    $total_cart_price += $sub_total;
-                                ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($item['name']); ?></td>
-                                        <td class="text-right"><?php echo $item['quantity']; ?></td>
-                                        <td class="text-right"><?php echo number_format($sub_total); ?> <sup>đ</sup></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2">**Phí vận chuyển**</td>
-                                    <td class="text-right">**Miễn phí**</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" class="total-final">**Tổng Cộng**</td>
-                                    <td class="text-right total-final"><?php echo number_format($total_cart_price); ?> <sup>đ</sup></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="form-group">
+                            <label>Số điện thoại *</label>
+                            <input type="tel" name="phone" class="form-control" required value="<?php echo htmlspecialchars($user_info['phone']); ?>">
+                        </div>
 
-                        <input type="hidden" name="total_amount" value="<?php echo $total_cart_price; ?>">
+                        <div class="form-group">
+                            <label>Địa chỉ giao hàng *</label>
+                            <textarea name="address" class="form-control" rows="3" required><?php echo htmlspecialchars($user_info['address']); ?></textarea>
+                        </div>
 
-                        <div class="text-center" style="margin-top: 30px;">
-                            <button type="submit" class="btn btn-success btn-lg" style="width: 100%; border-radius: 25px; font-weight: bold;">
-                                <i class="fa fa-shopping-bag"></i> Đặt Hàng Ngay
+                        <div class="form-group">
+                            <label>Phương thức thanh toán *</label>
+                            <select name="payment_method" class="form-control">
+                                <option value="COD">Thanh toán khi nhận (COD)</option>
+                                <option value="BANK">Chuyển khoản ngân hàng</option>
+                                <option value="CARD">Thẻ tín dụng</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <a href="/cart.php" class="btn btn-default"><i class="fa fa-arrow-left"></i> Quay về giỏ hàng</a>
+                            <button type="submit" class="btn btn-success pull-right" style="border-radius: 5px; padding: 10px 30px;">
+                                <i class="fa fa-check-circle"></i> ĐẶT HÀNG
                             </button>
-                            <p style="margin-top: 15px;">
-                                <small>Bằng việc đặt hàng, bạn đồng ý với Điều khoản và Điều kiện của chúng tôi.</small>
-                            </p>
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tóm tắt đơn hàng -->
+            <div class="col-md-6">
+                <div class="checkout-box">
+                    <h3 class="checkout-title">🛒 Tóm tắt đơn hàng</h3>
+                    <table class="table order-summary">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Giá</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($_SESSION['cart'] as $item): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($item['name']); ?></td>
+                                    <td><?php echo $item['quantity']; ?></td>
+                                    <td><?php echo number_format($item['price']); ?> đ</td>
+                                    <td><?php echo number_format($item['price'] * $item['quantity']); ?> đ</td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <hr>
+
+                    <div style="font-size: 18px; margin-bottom: 10px;">
+                        <strong>Tổng cộng:</strong> <span class="total-final"><?php echo number_format($total_price); ?> đ</span>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                        <p><i class="fa fa-truck"></i> <strong>Phí vận chuyển:</strong> Miễn phí</p>
+                        <p><i class="fa fa-money"></i> <strong>Tổng thanh toán:</strong> <span class="total-final"><?php echo number_format($total_price); ?> đ</span></p>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <?php include("model/footer.php"); ?>
-
 </body>
 
 </html>

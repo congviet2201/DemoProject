@@ -1,12 +1,12 @@
 <?php
-require_once('connect.php');
+require_once __DIR__ . '/connect.php';
 ?>
 <!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
-    <title>Fashion MyLiShop</title>
+    <title>VIE Shop</title>
     <!-- Bootstrap 3 CSS (CDN) -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
