@@ -33,20 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = trim($_POST['phone'] ?? '');
     $address = trim($_POST['address'] ?? '');
     $payment_method = trim($_POST['payment_method'] ?? 'COD');
-    
+
     // Validation
     if (empty($fullname) || empty($email) || empty($phone) || empty($address)) {
         $_SESSION['checkout_error'] = "Vui lòng điền đầy đủ thông tin.";
         header('Location: /checkout.php');
         exit;
     }
-    
+
     // Tính tổng tiền
     $total_amount = 0;
     foreach ($_SESSION['cart'] as $item) {
         $total_amount += $item['price'] * $item['quantity'];
     }
-    
+
     // Tạo đơn hàng
     $order_id = 'ORD-' . time();
     $new_order = [
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'order_date' => date('Y-m-d H:i:s'),
         'status' => 'pending'
     ];
-    
+
     // Lưu vào session
     $_SESSION['order_info'] = $new_order;
     if (!isset($_SESSION['orders'])) {
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $adminMessage .= "<li>" . htmlspecialchars($it['name']) . " x" . intval($it['quantity']) . " - " . number_format($it['price']) . " đ</li>";
     }
     $adminMessage .= "</ul>";
-    send_mail_simple(ADMIN_EMAIL, $adminSubject, $adminMessage);
+    send_mail(ADMIN_EMAIL, $adminSubject, $adminMessage);
 
     header('Location: /order_success.php');
     exit;

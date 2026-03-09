@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $user = "root";
-$password = "77171771";
-$database = "fashion_mylishop";
+$password = "";
+$database = "Office";
 
 try {
     $conn = new PDO(

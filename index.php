@@ -134,7 +134,7 @@ $prd = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
         }
 
         .product-info button label {
-            color: red;
+            color: re d;
         }
     </style>
 </head>
